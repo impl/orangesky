@@ -1,0 +1,21 @@
+{
+    "arch": "x86_64",
+    "os": "orangesky",
+    "target-endian": "little",
+    "target-pointer-width": "64",
+    "llvm-target": "x86_64-unknown-orangesky",
+
+    "linker-is-gnu": true,
+    "pre-link-args": [
+        "-nostartfiles",
+        "-Wl,--gc-sections",
+        "-Wl,--nmagic",
+        "-Wl,-T,src/arch/x86_64/linker.ld"
+    ],
+    "dynamic-linking": false,
+    "executables": true,
+    "exe-suffix": ".elf",
+
+    "disable-redzone": true,
+    "no-compiler-rt": true
+}

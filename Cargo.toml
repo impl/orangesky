@@ -1,0 +1,10 @@
+[package]
+name = "orangesky"
+version = "0.1.0"
+build = "build.rs"
+
+[dependencies.orangesky-libcore]
+path = "deps/libcore"
+
+[build-dependencies]
+gcc = "^0.3.13"

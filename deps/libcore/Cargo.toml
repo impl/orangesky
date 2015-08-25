@@ -1,0 +1,12 @@
+[package]
+name = "orangesky-libcore"
+version = "0.1.0"
+build = "build.rs"
+
+[lib]
+name = "core"
+path = "../../external/rust/src/libcore/lib.rs"
+crate-type = ["rlib"]
+
+[build-dependencies]
+git2 = "^0.3.0"
