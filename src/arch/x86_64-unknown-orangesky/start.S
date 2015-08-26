@@ -127,15 +127,6 @@ _start32:
     .global _start64
     .type _start64, @function
 _start64:
-.Lds_setup:
-# Set up data segment.
-    movw $0x10, %ax
-    movw %ax, %ds
-    movw %ax, %es
-    movw %ax, %fs
-    movw %ax, %gs
-    movw %ax, %ss
-
 # Switch to VMA address, and jump into our kernel main.
     movabsq $_start64_vma, %rax
     jmpq *%rax
@@ -147,6 +138,15 @@ _start64:
 # Entry point for 64-bit code linked to virtual address.
     .type _start64_vma, @function
 _start64_vma:
+.Lds_setup:
+# Set up data segment.
+    movw $0x10, %ax
+    movw %ax, %ds
+    movw %ax, %es
+    movw %ax, %fs
+    movw %ax, %gs
+    movw %ax, %ss
+
 .Lstack_setup:
 # Make stack addressable.
     movabsq $.Lstack_end, %rsp
@@ -184,7 +184,7 @@ _start64_vma:
 
     .balign 0x1000
 .Lpage_table:
-    .space 0x4000
+    .space 0x3000
 
     .section .bss
     .balign 8

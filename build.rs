@@ -6,19 +6,10 @@ use std::path;
 
 fn main() {
     let target = env::var("TARGET").unwrap();
-    let target_vec: Vec<&str> = target.splitn(3, "-").collect();
 
-    if target_vec.len() != 3 {
-        panic!("unsupported target: {}", target);
-    }
-
-    let arch = target_vec[0];
-    let vendor = target_vec[1];
-    let sys = target_vec[2];
-
-    let arch_path = path::PathBuf::from("src/arch").join(arch);
+    let arch_path = path::PathBuf::from("src/arch").join(&target);
     if fs::metadata(&arch_path).is_err() {
-        panic!("unsupported architecture: {}", arch);
+        panic!("unsupported target: {}", target);
     }
 
     let mut config = gcc::Config::new();

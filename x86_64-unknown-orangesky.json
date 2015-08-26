@@ -10,7 +10,7 @@
         "-nostartfiles",
         "-Wl,--gc-sections",
         "-Wl,--nmagic",
-        "-Wl,-T,src/arch/x86_64/linker.ld"
+        "-Wl,-T,src/arch/x86_64-unknown-orangesky/linker.ld"
     ],
     "dynamic-linking": false,
     "executables": true,
