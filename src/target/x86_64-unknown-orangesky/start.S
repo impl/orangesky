@@ -31,6 +31,23 @@
     .section .start, "ax"
     .balign 8
 
+.Lerr_lm_unsupported:
+    .asciz "Not a 64-bit CPU. Halt."
+.Lerr_too_big:
+    .asciz "Kernel memory too large to map. Halt."
+
+.Lerr:
+    movl %eax, %esi
+    movl $0xb8000, %edi
+
+1:  movsb
+    movb $7, (%edi)
+    incl %edi
+    cmpb $0, (%esi)
+    jne 1b
+
+    ret
+
 # Main entry point.
     .global _start32
     .type _start32, @function
@@ -84,6 +101,10 @@ _start32:
     shrl $21, %ecx # 2MB
     addl $1, %ecx
 
+# Make sure our kernel is less than 1GB.
+    cmpl $512, %ecx
+    jg .Ltoo_big
+
 # Set up PDT (at +0x2000). We temporarily map the full kernel in here in 2MB pages.
     addl $0x1000, %edi
     movl $0x83, %eax
@@ -116,6 +137,15 @@ _start32:
 
 .Llm_unsupported:
 # Unsupported architecture, so jump out.
+    leal .Lerr_lm_unsupported, %eax
+    call .Lerr
+    jmp .Lhang32
+
+.Ltoo_big:
+# Kernel binary is too big, so jump out.
+    leal .Lerr_too_big, %eax
+    call .Lerr
+    jmp .Lhang32
 
 .Lhang32:
     hlt
@@ -127,6 +157,7 @@ _start32:
     .global _start64
     .type _start64, @function
 _start64:
+
 # Switch to VMA address, and jump into our kernel main.
     movabsq $_start64_vma, %rax
     jmpq *%rax
@@ -155,12 +186,17 @@ _start64_vma:
     pushq $0
     popfq
 
+.Lpaging_clear:
+# Clear lower memory from the page table.
+    leaq .Lpage_table, %rdi
+    movq $0, (%rdi)
+
 .Lmultiboot_restore:
 # Make Multiboot information addressable.
     movabsq $KERNEL_VMA, %rdi
     addq %rsi, %rdi
 
-.Lkernel:
+.Lmain:
     call main
 
 .Lhang64:
