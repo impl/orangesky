@@ -1,3 +1,4 @@
 [submodule "external/rust"]
-	path = external/rust
-	url = git://github.com/rust-lang/rust.git
+    path = external/rust
+    url = git://github.com/rust-lang/rust.git
+    ignore = all

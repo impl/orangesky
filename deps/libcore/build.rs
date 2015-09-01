@@ -14,6 +14,8 @@ fn main() {
     let repo = Repository::open("../../external/rust").unwrap();
 
     // Hard reset to requested commit.
-    let object = repo.find_object(oid, Some(ObjectType::Commit)).unwrap();
-    repo.reset(&object, ResetType::Hard, Some(CheckoutBuilder::new().force().remove_untracked(true))).unwrap();
+    match repo.find_object(oid, Some(ObjectType::Commit)) {
+        Ok(object) => repo.reset(&object, ResetType::Hard, Some(CheckoutBuilder::new().force().remove_untracked(true))).unwrap(),
+        Err(e) => panic!("unable to switch to commit {} (advertised rustc version):\n{}", oid, e)
+    };
 }
